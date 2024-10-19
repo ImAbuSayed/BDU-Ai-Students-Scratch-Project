@@ -2,29 +2,45 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\Task;
+use Livewire\Component;
 use OpenAI;
 
 class AiToDoList extends Component
 {
-    public $task;
+    public $tasks;
+
     public $newTaskTitle = '';
+
     public $newTaskDescription = '';
-    public $editingTaskID;
+
+    public $editingTaskId;
+
     public $editingTaskTitle;
+
     public $editingTaskDescription;
 
-    public $aiSuggestions = '';
+    public $aiSuggestion = '';
+
+    public $aiSuggestedTitle = '';
+
+    public $aiSuggestedDescription = '';
+
+    public $isLoading = false;
 
     protected $rules = [
-        'newTaskTitle' => 'required',
-        'newTaskDescription' => 'required',
+        'newTaskTitle' => 'required|min:3',
+        'newTaskDescription' => 'nullable',
     ];
 
     public function mount()
     {
-        $this->task = Task::all();
+        $this->tasks = Task::orderBy('created_at', 'desc')->get();
+    }
+
+    public function render()
+    {
+        return view('livewire.ai-to-do-list');
     }
 
     public function addTask()
@@ -38,94 +54,126 @@ class AiToDoList extends Component
 
         $this->newTaskTitle = '';
         $this->newTaskDescription = '';
-
-        $this->task = Task::all();
-
+        $this->refreshTasks();
     }
 
-    public function toggleComplete($taskID)
+    public function toggleComplete($taskId)
     {
-        $task = Task::find($taskID);
-
-        $task->completed = !$task->completed;
-
+        $task = Task::find($taskId);
+        $task->is_completed = ! $task->is_completed;
         $task->save();
-
-        $this->task = Task::all();
+        $this->refreshTasks();
     }
 
-    public function editTask($taskID)
+    public function editTask($taskId)
     {
-        $this->editingTaskID = $taskID;
-
-        $task = Task::find($taskID);
-
+        $this->editingTaskId = $taskId;
+        $task = Task::find($taskId);
         $this->editingTaskTitle = $task->title;
         $this->editingTaskDescription = $task->description;
-
     }
 
     public function updateTask()
     {
         $this->validate([
-            'editingTaskTitle' => 'required',
-            'editingTaskDescription' => 'required',
+            'editingTaskTitle' => 'required|min:3',
+            'editingTaskDescription' => 'nullable',
         ]);
 
-        $task = Task::find($this->editingTaskID);
-
+        $task = Task::find($this->editingTaskId);
         $task->title = $this->editingTaskTitle;
         $task->description = $this->editingTaskDescription;
-
         $task->save();
 
-        $this->editingTaskID = null;
-        $this->editingTaskTitle = null;
-        $this->editingTaskDescription = null;
-
-        $this->task = Task::all();
+        $this->editingTaskId = null;
+        $this->refreshTasks();
     }
 
-    public function deleteTask($taskID)
+    public function deleteTask($taskId)
     {
-        Task::find($taskID)->delete();
-        $this->task = Task::all();
+        Task::destroy($taskId);
+        $this->refreshTasks();
     }
 
     public function getAiSuggestion()
     {
+        $this->isLoading = true;
         $ApiKey = getenv('OPENAI_API_KEY');
         $client = OpenAI::client($ApiKey);
 
         $existingTasks = $this->tasks->pluck('title')->implode(', ');
 
-        $response = $client->chat->create([
+        $prompt = '';
+        if (! empty($this->newTaskTitle) || ! empty($this->newTaskDescription)) {
+            $prompt = "Based on the following input:\nTitle: {$this->newTaskTitle}\nDescription: {$this->newTaskDescription}\n";
+            $prompt .= 'Suggest an improved or related task with a title and description.';
+        } else {
+            $prompt = "Based on these existing tasks: $existingTasks, suggest a new relevant task with a title and description.";
+        }
+
+        $response = $client->chat()->create([
             'model' => 'gpt-3.5-turbo',
             'messages' => [
-
-                [
-                    'role' => 'system',
-                    'content' => "You are a helpful assistant that suggest tasks based on existing ones."
-                ],
-
-                [
-                    'role' => 'user',
-                    'content' => "Based on these existing tasks: $existingTasks, suggest me a new relevent task."
-                ],
-
-            ]
+                ['role' => 'system', 'content' => 'You are a helpful assistant that suggests tasks based on existing ones or input. Provide your response in JSON format with "title" and "description" fields.'],
+                ['role' => 'user', 'content' => $prompt],
+            ],
         ]);
 
-        $this->aiSuggestions = $response->choices[0]->message->content;
+        $suggestion = json_decode($response->choices[0]->message->content, true);
+        $this->aiSuggestedTitle = $suggestion['title'] ?? '';
+        $this->aiSuggestedDescription = $suggestion['description'] ?? '';
+        $this->aiSuggestion = "Title: {$this->aiSuggestedTitle}\n\nDescription: {$this->aiSuggestedDescription}";
+        $this->isLoading = false;
     }
 
-    public function improveTaskDescription($taskID)
+    public function useAiSuggestion()
     {
-
+        $this->newTaskTitle = $this->aiSuggestedTitle;
+        $this->newTaskDescription = $this->aiSuggestedDescription;
+        $this->aiSuggestion = '';
+        $this->aiSuggestedTitle = '';
+        $this->aiSuggestedDescription = '';
     }
 
-    public function render()
+    public function improveTaskDescription($taskId)
     {
-        return view('livewire.ai-to-do-list');
+        $this->isLoading = true;
+        $task = Task::find($taskId);
+
+        $ApiKey = getenv('OPENAI_API_KEY');
+        $client = OpenAI::client($ApiKey);
+
+        $response = $client->chat()->create([
+            'model' => 'gpt-3.5-turbo',
+            'messages' => [
+                ['role' => 'system', 'content' => 'You are a helpful assistant that improves task descriptions. Provide your response in JSON format with "title" and "description" fields.'],
+                ['role' => 'user', 'content' => "Improve this task title and description:\nTitle: {$task->title}\nDescription: {$task->description}"],
+            ],
+        ]);
+
+        $improvement = json_decode($response->choices[0]->message->content, true);
+        $task->title = $improvement['title'] ?? $task->title;
+        $task->description = $improvement['description'] ?? $task->description;
+        $task->save();
+        $this->refreshTasks();
+        $this->isLoading = false;
+    }
+
+    public function addAiSuggestion()
+    {
+        Task::create([
+            'title' => $this->aiSuggestedTitle,
+            'description' => $this->aiSuggestedDescription,
+        ]);
+
+        $this->aiSuggestion = '';
+        $this->aiSuggestedTitle = '';
+        $this->aiSuggestedDescription = '';
+        $this->refreshTasks();
+    }
+
+    private function refreshTasks()
+    {
+        $this->tasks = Task::orderBy('created_at', 'desc')->get();
     }
 }
