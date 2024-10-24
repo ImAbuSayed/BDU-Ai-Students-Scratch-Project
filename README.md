@@ -2,6 +2,10 @@
 
 Welcome to the BDU AI Students Scratch Project! This repository is designed to help students learn and practice AI concepts through hands-on projects. Please follow the instructions below to get started with the project and **assignments**.
 
+## Project Submission Deadline
+
+The project submission deadline is **Thursday, October 31, 2024**.
+
 ## Getting Started
 
 Clone project onto your computer: [https://github.com/ImAbuSayed/BDU-Ai-Students-Scratch-Project](https://github.com/ImAbuSayed/BDU-Ai-Students-Scratch-Project)
@@ -160,7 +164,7 @@ You can submit your assignment using either Git command line or GitHub Desktop. 
    ```
 3. Create and switch to a new branch with your ID and name:
    ```
-   git checkout -b assignment/YOUR_ID_YOUR_NAME
+   git checkout -b assignment/YOUR_ID_YOUR_NAME/YOUR_PROJECT_NAME
    ```
 4. Create a new directory with your ID and name:
    ```
@@ -177,9 +181,9 @@ You can submit your assignment using either Git command line or GitHub Desktop. 
    ```
 8. Push your branch to the original repository:
    ```
-   git push origin assignment/YOUR_ID_YOUR_NAME
+   git push origin assignment/YOUR_ID_YOUR_NAME/YOUR_PROJECT_NAME
    ```
-9. Go to the original repository on GitHub and create a pull request from your branch.
+9. Go to the original repository on GitHub and create a pull request from your branch. During Final submission use commit message of "Complete assignment: YOUR_PROJECT_NAME".
 
 ### Using GitHub Desktop
 
