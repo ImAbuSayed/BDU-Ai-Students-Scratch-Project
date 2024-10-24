@@ -154,11 +154,9 @@ After adding your project components to the Livewire folder update the welcome p
 
 ### Instructions for Students:
 
-1. Add your route to `routes/web.php` for your Livewire component.
-2. In `welcome.blade.php`, create a collapsible section for your project with your name, student ID, and a brief description.
+1. Add your livewirecomponent to `welcome.blade.php` for your Livewire component.
+2. In your main blade file, create a section for your project with your name, student ID, and a brief description about your project.
 3. Implement proper error handling and ensure that your project functions correctly.
-
-This format will allow users to easily navigate through different projects on the main page while maintaining a clean and organized layout.
 
 ## Submitting Your Assignment
 
