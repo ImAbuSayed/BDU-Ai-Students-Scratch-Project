@@ -148,6 +148,130 @@ For all projects:
 
 Remember to keep the code well-organized and commented. These projects will help BDU students understand the basics of web development and introduce them to concepts that mimic AI functionality, preparing them for more advanced AI integration in the future.
 
+
+## Project Assignment Instructions
+
+After adding your project components to the Livewire folder, include their routes in the `web.php` route file and update the welcome page to reflect the structure below. Each project should have a collapsible section with the project name as the header and details in a description. Here's an example:
+
+### Adding Route in `routes/web.php`
+
+<pre class="!overflow-visible"><div class="contain-inline-size rounded-md border-[0.5px] border-token-border-medium relative bg-token-sidebar-surface-primary dark:bg-gray-950"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between rounded-t-md h-9 bg-token-sidebar-surface-primary dark:bg-token-main-surface-secondary">php</div><div class="sticky top-9 md:top-[5.75rem]"><div class="absolute bottom-0 right-2 flex h-9 items-center"><div class="flex items-center rounded bg-token-sidebar-surface-primary px-2 font-sans text-xs text-token-text-secondary dark:bg-token-main-surface-secondary"><span class="" data-state="closed"><button class="flex gap-1 items-center py-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-sm"><path fill-rule="evenodd" clip-rule="evenodd" d="M7 5C7 3.34315 8.34315 2 10 2H19C20.6569 2 22 3.34315 22 5V14C22 15.6569 20.6569 17 19 17H17V19C17 20.6569 15.6569 22 14 22H5C3.34315 22 2 20.6569 2 19V10C2 8.34315 3.34315 7 5 7H7V5ZM9 7H14C15.6569 7 17 8.34315 17 10V15H19C19.5523 15 20 14.5523 20 14V5C20 4.44772 19.5523 4 19 4H10C9.44772 4 9 4.44772 9 5V7ZM5 9C4.44772 9 4 9.44772 4 10V19C4 19.5523 4.44772 20 5 20H14C14.5523 20 15 19.5523 15 19V10C15 9.44772 14.5523 9 14 9H5Z" fill="currentColor"></path></svg>Copy code</button></span></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="!whitespace-pre hljs language-php">use App\Http\Livewire\AiToDoList;
+use App\Http\Livewire\AiTextSummarizer;
+use App\Http\Livewire\AiArticleGenerator;
+use App\Http\Livewire\AiRecipeGenerator;
+use App\Http\Livewire\AiTextParaphraser;
+use App\Http\Livewire\AiQuestionGenerator;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+// Add routes for each project component here
+Route::get('/ai-to-do-list', AiToDoList::class);
+Route::get('/ai-text-summarizer', AiTextSummarizer::class);
+Route::get('/ai-article-generator', AiArticleGenerator::class);
+Route::get('/ai-recipe-generator', AiRecipeGenerator::class);
+Route::get('/ai-text-paraphraser', AiTextParaphraser::class);
+Route::get('/ai-question-generator', AiQuestionGenerator::class);
+</code></div></div></pre>
+
+### Adding Projects to the Welcome Page
+
+In your `welcome.blade.php`, copy the following structure and add one for each student's project:
+
+<pre class="!overflow-visible"><div class="contain-inline-size rounded-md border-[0.5px] border-token-border-medium relative bg-token-sidebar-surface-primary dark:bg-gray-950"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between rounded-t-md h-9 bg-token-sidebar-surface-primary dark:bg-token-main-surface-secondary">html</div><div class="sticky top-9 md:top-[5.75rem]"><div class="absolute bottom-0 right-2 flex h-9 items-center"><div class="flex items-center rounded bg-token-sidebar-surface-primary px-2 font-sans text-xs text-token-text-secondary dark:bg-token-main-surface-secondary"><span class="" data-state="closed"><button class="flex gap-1 items-center py-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-sm"><path fill-rule="evenodd" clip-rule="evenodd" d="M7 5C7 3.34315 8.34315 2 10 2H19C20.6569 2 22 3.34315 22 5V14C22 15.6569 20.6569 17 19 17H17V19C17 20.6569 15.6569 22 14 22H5C3.34315 22 2 20.6569 2 19V10C2 8.34315 3.34315 7 5 7H7V5ZM9 7H14C15.6569 7 17 8.34315 17 10V15H19C19.5523 15 20 14.5523 20 14V5C20 4.44772 19.5523 4 19 4H10C9.44772 4 9 4.44772 9 5V7ZM5 9C4.44772 9 4 9.44772 4 10V19C4 19.5523 4.44772 20 5 20H14C14.5523 20 15 19.5523 15 19V10C15 9.44772 14.5523 9 14 9H5Z" fill="currentColor"></path></svg>Copy code</button></span></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="!whitespace-pre hljs language-html"><div class="container mx-auto py-12">
+    <div x-data="{ open: true }" class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-xl">
+        <!-- Clickable header for AI Todo List -->
+        <h2 @click="open = !open" class="text-3xl font-bold mb-6 text-center text-gray-800 cursor-pointer">
+            AI-Enhanced Todo List (Demo)
+        </h2>
+        <!-- Collapsible content -->
+        <div x-show="open" x-transition>
+            <livewire:ai-to-do-list />
+        </div>
+    </div>
+</div>
+
+<!-- New Project Section for AI Text Summarizer -->
+<div class="container mx-auto py-12">
+    <div x-data="{ open: false }" class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-xl">
+        <!-- Clickable header -->
+        <h2 @click="open = !open" class="text-3xl font-bold mb-6 text-center text-gray-800 cursor-pointer">
+            AI-powered Text Summarizer
+        </h2>
+        <!-- Project details -->
+        <p class="text-center text-gray-700 mb-4">Assigned to: Bakhtiar Muiz (1801045) and Md. Faishal Ahmed (1801003)</p>
+        <p class="text-center text-gray-600 mb-4">This project allows users to input text and summarize it based on predefined rules. It offers different summary lengths and an easy-to-use interface.</p>
+        <!-- Collapsible content for project -->
+        <div x-show="open" x-transition>
+            <livewire:ai-text-summarizer />
+        </div>
+    </div>
+</div>
+
+<!-- Repeat similar structure for other projects -->
+<div class="container mx-auto py-12">
+    <div x-data="{ open: false }" class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-xl">
+        <h2 @click="open = !open" class="text-3xl font-bold mb-6 text-center text-gray-800 cursor-pointer">
+            AI-based Article Generator
+        </h2>
+        <p class="text-center text-gray-700 mb-4">Assigned to: Saurav Kundu (1801022) and Tasnim Rahman (1801011)</p>
+        <p class="text-center text-gray-600 mb-4">Generates simple articles based on user inputs such as topic, key points, and writing style.</p>
+        <div x-show="open" x-transition>
+            <livewire:ai-article-generator />
+        </div>
+    </div>
+</div>
+
+<!-- Additional project structure examples -->
+<div class="container mx-auto py-12">
+    <div x-data="{ open: false }" class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-xl">
+        <h2 @click="open = !open" class="text-3xl font-bold mb-6 text-center text-gray-800 cursor-pointer">
+            AI-based Recipe Generator
+        </h2>
+        <p class="text-center text-gray-700 mb-4">Assigned to: Mohammad Armaan (1801046) and MD ABID HASSAN SAJIB (1802007)</p>
+        <p class="text-center text-gray-600 mb-4">Generates recipes based on user-specified ingredients and cuisine type.</p>
+        <div x-show="open" x-transition>
+            <livewire:ai-recipe-generator />
+        </div>
+    </div>
+</div>
+
+<div class="container mx-auto py-12">
+    <div x-data="{ open: false }" class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-xl">
+        <h2 @click="open = !open" class="text-3xl font-bold mb-6 text-center text-gray-800 cursor-pointer">
+            AI Text Paraphraser
+        </h2>
+        <p class="text-center text-gray-700 mb-4">Assigned to: MARIA AFRIN BINDU (1802033) and MOHAMMAD SEFAT KHAN (1802036)</p>
+        <p class="text-center text-gray-600 mb-4">Rephrases text using synonym replacement and sentence structure adjustments.</p>
+        <div x-show="open" x-transition>
+            <livewire:ai-text-paraphraser />
+        </div>
+    </div>
+</div>
+
+<div class="container mx-auto py-12">
+    <div x-data="{ open: false }" class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-xl">
+        <h2 @click="open = !open" class="text-3xl font-bold mb-6 text-center text-gray-800 cursor-pointer">
+            AI-powered Question Generator
+        </h2>
+        <p class="text-center text-gray-700 mb-4">Assigned to: Md. Manjil Hassan (1802011) and Moontaha Zaman (1802025)</p>
+        <p class="text-center text-gray-600 mb-4">Generates questions from given text content based on keywords and predefined templates.</p>
+        <div x-show="open" x-transition>
+            <livewire:ai-question-generator />
+        </div>
+    </div>
+</div>
+</code></div></div></pre>
+
+### Instructions for Students:
+
+1. Add your route to `routes/web.php` for your Livewire component.
+2. In `welcome.blade.php`, create a collapsible section for your project with your name, student ID, and a brief description.
+3. Implement proper error handling and ensure that your project functions correctly.
+
+This format will allow users to easily navigate through different projects on the main page while maintaining a clean and organized layout.
+
 ## Submitting Your Assignment
 
 You can submit your assignment using either Git command line or GitHub Desktop. Choose the method you're most comfortable with.
